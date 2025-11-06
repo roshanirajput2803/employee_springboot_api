@@ -1,20 +1,21 @@
-# Use Java 17 base image
-FROM eclipse-temurin:17-jdk-jammy
+# Use official Node.js image
+FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy all files
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy all source files
 COPY . .
 
-# ✅ Give execute permission to mvnw
-RUN chmod +x mvnw
-
 # Build the app
-RUN mvn -B clean package -DskipTests
+RUN npm run build
 
-# Expose port 8080
+# Expose the port
 EXPOSE 8080
 
-# Run the jar
-CMD ["java", "-jar", "target/employee_springboot_api.jar"]
+# Start the app
+CMD ["npm", "start"]
